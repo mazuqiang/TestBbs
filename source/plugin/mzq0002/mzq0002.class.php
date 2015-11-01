@@ -20,9 +20,17 @@ class plugin_mzq0002_forum extends plugin_mzq0002 {
 	function viewthread_postfooter_output(){
 		global $_G, $postlist;
 		$d = array();
-		
+		if(!$_G[adminid]){
+			return array();
+		}
+		$result = C::t('#mzq0002#reply_essence')->fetch_all(array_keys($postlist));
+		empty($result) && ($result = array());
 		foreach($postlist as $k => $v){
-		$d[$k] = "<a  onclick=showWindow({$k},'/plugin.php?id=mzq0002:mzq0002&pid={$v['pid']}&uid={$v['authorid']}') >推荐</a>";
+			if($result[$k]['uid'] == $v['authorid'] ){
+				$d[$k] = "<a  onclick=showWindow({$k},'/plugin.php?id=mzq0002:mzq0002&pid={$v['pid']}&uid={$v['authorid']}&type=d') >取消</a>";
+			}else{
+				$d[$k] = "<a  onclick=showWindow({$k},'/plugin.php?id=mzq0002:mzq0002&pid={$v['pid']}&uid={$v['authorid']}&type=a') >推荐</a>";
+			}
 		}
 		//var_dump($d);
 		return $d;
